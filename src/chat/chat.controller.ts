@@ -9,7 +9,6 @@ import mongoose from 'mongoose';
 
 export const createChat = asyncHandler(async (req: IAuthRequest, res: Response) => {
   const { name, type, participants, description } = req.body;
-  console.log("test");
   const currentUserId = req.user!._id;
 
   // Validate participants
