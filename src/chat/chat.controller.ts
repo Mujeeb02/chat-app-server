@@ -11,6 +11,8 @@ export const createChat = asyncHandler(async (req: IAuthRequest, res: Response) 
   const { name, type, participants, description } = req.body;
   const currentUserId = req.user!._id;
 
+  console.log(req.body);
+  
   // Validate participants
   if (!participants || participants.length === 0) {
     return res.status(400).json({
