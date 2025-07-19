@@ -23,7 +23,7 @@ const app = (0, express_1.default)();
 const server = (0, http_1.createServer)(app);
 const io = new socket_io_1.Server(server, {
     cors: {
-        origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+        origin: ['https://chat-app-pied-gamma.vercel.app', 'http://localhost:3000', '*'],
         methods: ['GET', 'POST', 'PUT', 'DELETE']
     }
 });
@@ -52,7 +52,7 @@ app.use((0, helmet_1.default)());
 app.use((0, compression_1.default)());
 app.use((0, morgan_1.default)('combined'));
 app.use((0, cors_1.default)({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+    origin: ['https://chat-app-pied-gamma.vercel.app', 'http://localhost:3000', '*'],
     credentials: true
 }));
 app.use(express_1.default.json({ limit: '10mb' }));

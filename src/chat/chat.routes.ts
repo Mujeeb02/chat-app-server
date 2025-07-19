@@ -1,6 +1,13 @@
 import express from 'express';
-import { body, validationResult } from 'express-validator';
 import { authenticateToken } from '../middleware/auth';
+import { handleValidationErrors } from '../middleware/validation';
+import {
+  createChatRules,
+  updateChatRules,
+  chatParamRules,
+  addParticipantRules,
+  addAdminRules
+} from '../middleware/validationRules';
 import {
   createChat,
   getChats,
@@ -19,106 +26,97 @@ import {
 
 const router = express.Router();
 
-// Validation middleware
-const handleValidationErrors = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({
-      success: false,
-      message: 'Validation error',
-      errors: errors.array()
-    });
-  }
-  return next();
-};
-
 // Create chat
-router.post('/', authenticateToken, [
-  body('type')
-    .isIn(['direct', 'group'])
-    .withMessage('Type must be either direct or group'),
-  body('participants')
-    .isArray({ min: 1 })
-    .withMessage('At least one participant is required'),
-  body('participants.*')
-    .isMongoId()
-    .withMessage('Invalid participant ID'),
-  body('name')
-    .if(body('type').equals('group'))
-    .notEmpty()
-    .withMessage('Group name is required')
-    .isLength({ min: 1, max: 100 })
-    .withMessage('Group name must be between 1 and 100 characters'),
-  body('description')
-    .optional()
-    .isLength({ max: 500 })
-    .withMessage('Description must be less than 500 characters'),
-  handleValidationErrors
-], createChat);
+router.post('/', 
+  authenticateToken, 
+  createChatRules, 
+  handleValidationErrors, 
+  createChat
+);
 
 // Get all chats for current user
 router.get('/', authenticateToken, getChats);
 
 // Get specific chat
-router.get('/:chatId', authenticateToken, [
-  body('chatId')
-    .isMongoId()
-    .withMessage('Invalid chat ID'),
-  handleValidationErrors
-], getChat);
+router.get('/:chatId', 
+  authenticateToken, 
+  chatParamRules, 
+  handleValidationErrors, 
+  getChat
+);
 
 // Update chat
-router.put('/:chatId', authenticateToken, [
-  body('name')
-    .optional()
-    .isLength({ min: 1, max: 100 })
-    .withMessage('Name must be between 1 and 100 characters'),
-  body('description')
-    .optional()
-    .isLength({ max: 500 })
-    .withMessage('Description must be less than 500 characters'),
-  body('avatar')
-    .optional()
-    .isURL()
-    .withMessage('Avatar must be a valid URL'),
-  handleValidationErrors
-], updateChat);
+router.put('/:chatId', 
+  authenticateToken, 
+  updateChatRules, 
+  handleValidationErrors, 
+  updateChat
+);
 
 // Delete chat
-router.delete('/:chatId', authenticateToken, deleteChat);
+router.delete('/:chatId', 
+  authenticateToken, 
+  chatParamRules, 
+  handleValidationErrors, 
+  deleteChat
+);
 
 // Add participant
-router.post('/:chatId/participants', authenticateToken, [
-  body('userId')
-    .isMongoId()
-    .withMessage('Invalid user ID'),
-  handleValidationErrors
-], addParticipant);
+router.post('/:chatId/participants', 
+  authenticateToken, 
+  addParticipantRules, 
+  handleValidationErrors, 
+  addParticipant
+);
 
 // Remove participant
-router.delete('/:chatId/participants/:userId', authenticateToken, removeParticipant);
+router.delete('/:chatId/participants/:userId', 
+  authenticateToken, 
+  removeParticipant
+);
 
 // Add admin
-router.post('/:chatId/admins', authenticateToken, [
-  body('userId')
-    .isMongoId()
-    .withMessage('Invalid user ID'),
-  handleValidationErrors
-], addAdmin);
+router.post('/:chatId/admins', 
+  authenticateToken, 
+  addAdminRules, 
+  handleValidationErrors, 
+  addAdmin
+);
 
 // Remove admin
-router.delete('/:chatId/admins/:userId', authenticateToken, removeAdmin);
+router.delete('/:chatId/admins/:userId', 
+  authenticateToken, 
+  removeAdmin
+);
 
 // Toggle mute
-router.put('/:chatId/mute', authenticateToken, toggleMute);
+router.put('/:chatId/mute', 
+  authenticateToken, 
+  chatParamRules, 
+  handleValidationErrors, 
+  toggleMute
+);
 
 // Toggle pin
-router.put('/:chatId/pin', authenticateToken, togglePin);
+router.put('/:chatId/pin', 
+  authenticateToken, 
+  chatParamRules, 
+  handleValidationErrors, 
+  togglePin
+);
 
 // Generate invite link
-router.post('/:chatId/invite', authenticateToken, generateInviteLink);
+router.post('/:chatId/invite', 
+  authenticateToken, 
+  chatParamRules, 
+  handleValidationErrors, 
+  generateInviteLink
+);
 
-// Join by invite (public route)
-router.post('/join/:inviteToken', authenticateToken, joinByInvite);
+// Join by invite
+router.post('/join/:inviteToken', 
+  authenticateToken, 
+  joinByInvite
+);
 
 export default router; 

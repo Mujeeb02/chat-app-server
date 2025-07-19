@@ -13,6 +13,7 @@ const mongoose_1 = __importDefault(require("mongoose"));
 exports.createChat = (0, errorHandler_1.asyncHandler)(async (req, res) => {
     const { name, type, participants, description } = req.body;
     const currentUserId = req.user._id;
+    console.log(req.body);
     if (!participants || participants.length === 0) {
         return res.status(400).json({
             success: false,
