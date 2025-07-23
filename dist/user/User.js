@@ -107,6 +107,10 @@ const userSchema = new mongoose_1.Schema({
     passwordResetToken: String,
     passwordResetExpires: Date,
     refreshToken: String,
+    refreshTokens: {
+        type: [String],
+        default: []
+    },
     settings: {
         notifications: {
             email: { type: Boolean, default: true },

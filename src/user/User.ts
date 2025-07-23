@@ -19,6 +19,7 @@ export interface IUser extends Document {
   passwordResetToken?: string;
   passwordResetExpires?: Date;
   refreshToken?: string;
+  refreshTokens: string[];
   settings: {
     notifications: {
       email: boolean;
@@ -119,6 +120,10 @@ const userSchema = new Schema<IUser>({
   passwordResetToken: String,
   passwordResetExpires: Date,
   refreshToken: String,
+  refreshTokens: {
+    type: [String],
+    default: []
+  },
   settings: {
     notifications: {
       email: { type: Boolean, default: true },

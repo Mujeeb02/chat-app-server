@@ -9,9 +9,9 @@ const chat_routes_1 = __importDefault(require("./chat/chat.routes"));
 const message_routes_1 = __importDefault(require("./message/message.routes"));
 const upload_routes_1 = __importDefault(require("./upload/upload.routes"));
 const router = express_1.default.Router();
-router.use('/users', user_routes_1.default);
-router.use('/chats', chat_routes_1.default);
-router.use('/messages', message_routes_1.default);
-router.use('/upload', upload_routes_1.default);
+router.use("/users", user_routes_1.default);
+router.use("/chats", chat_routes_1.default);
+router.use("/messages", message_routes_1.default);
+router.use("/upload", upload_routes_1.default);
 exports.default = router;
 //# sourceMappingURL=mainRoutes.js.map

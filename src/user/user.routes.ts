@@ -1,19 +1,13 @@
 import express from 'express';
-import { body, param } from 'express-validator';
+import { body } from 'express-validator';
 import { authenticateToken } from '../middleware/auth';
 import { handleValidationErrors } from '../middleware/validation';
 import {
-  registerRules,
-  loginRules,
-  refreshTokenRules,
   updateProfileRules,
   changePasswordRules,
   userParamRules
 } from '../middleware/validationRules';
 import {
-  register,
-  login,
-  refreshToken,
   logout,
   getProfile,
   updateProfile,
@@ -23,48 +17,12 @@ import {
   getUserById,
   searchUsers,
   updateOnlineStatus,
-  deleteAccount,
-  forgotPassword,
-  resetPassword
+  deleteAccount
 } from './user.controller';
 
 const router = express.Router();
 
-// Public routes
-router.post('/register', 
-  registerRules, 
-  handleValidationErrors, 
-  register
-);
-
-router.post('/login', 
-  loginRules, 
-  handleValidationErrors, 
-  login
-);
-
-router.post('/refresh-token', 
-  refreshTokenRules, 
-  handleValidationErrors, 
-  refreshToken
-);
-
-router.post('/forgot-password', 
-  [body('email').isEmail().withMessage('Please provide a valid email')], 
-  handleValidationErrors, 
-  forgotPassword
-);
-
-router.post('/reset-password', 
-  [
-    body('token').notEmpty().withMessage('Reset token is required'),
-    body('newPassword').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long')
-  ], 
-  handleValidationErrors, 
-  resetPassword
-);
-
-// Protected routes
+// All user routes require authentication
 router.use(authenticateToken);
 
 router.post('/logout', logout);
